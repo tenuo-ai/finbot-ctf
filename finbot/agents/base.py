@@ -17,6 +17,7 @@ from finbot.core.messaging import event_bus
 from finbot.guardrails.schemas import HookKind
 from finbot.guardrails.service import GuardrailHookService
 from finbot.mcp.provider import MCPToolProvider
+from finbot.tenuo_guard import TenuoGuard
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +83,14 @@ class BaseAgent(ABC):
 
         # Connect to MCP servers if the agent has any configured
         await self._connect_mcp_servers()
+
+        tenuo_guard = (
+            await TenuoGuard.for_task(
+                self.agent_name, task_data, self.session_context, self.agent_config
+            )
+            if settings.TENUO_ENFORCE
+            else None
+        )
 
         system_prompt = self._get_final_system_prompt()
         user_prompt = await self._get_user_prompt(task_data=task_data)
@@ -155,7 +164,31 @@ class BaseAgent(ABC):
                                     tool_source=tool_source,
                                     tool_arguments=tool_call.get("arguments"),
                                 )
+                                denial = (
+                                    tenuo_guard.check(
+                                        tool_call_name, tool_call["arguments"]
+                                    )
+                                    if tenuo_guard
+                                    else None
+                                )
                                 try:
+                                    if denial:
+                                        await event_bus.emit_agent_event(
+                                            agent_name=self.agent_name,
+                                            event_type="tenuo_denied",
+                                            event_subtype="tool",
+                                            event_data={
+                                                "tool_name": tool_call_name,
+                                                "tool_arguments": tool_call["arguments"],
+                                                "reason": denial,
+                                            },
+                                            session_context=self.session_context,
+                                            workflow_id=self.workflow_id,
+                                            summary=f"Tenuo denied {tool_call_name}: {denial}",
+                                        )
+                                        raise PermissionError(
+                                            f"Denied by Tenuo: {denial}"
+                                        )
                                     logger.debug(
                                         "Calling callable %s with arguments %s",
                                         tool_call_name,

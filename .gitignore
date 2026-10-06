@@ -79,3 +79,7 @@ node_modules/
 
 # SQLite databases
 *.db
+
+# SQLite side files from local demo runs
+*.db-shm
+*.db-wal

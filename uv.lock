@@ -532,6 +532,7 @@ dependencies = [
     { name = "resend" },
     { name = "segno" },
     { name = "sqlalchemy" },
+    { name = "tenuo" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -574,6 +575,7 @@ requires-dist = [
     { name = "resend", specifier = ">=2.0.0" },
     { name = "segno", specifier = ">=1.6.0" },
     { name = "sqlalchemy", specifier = ">=2.0.44" },
+    { name = "tenuo", specifier = ">=0.3.2" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.37.0" },
 ]
 
@@ -1966,6 +1968,22 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c4/68/79977123bb7be889ad680d79a40f339082c1978b5cfcf62c2d8d196873ac/starlette-0.52.1.tar.gz", hash = "sha256:834edd1b0a23167694292e94f597773bc3f89f362be6effee198165a35d62933", size = 2653702, upload-time = "2026-01-18T13:34:11.062Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/81/0d/13d1d239a25cbfb19e740db83143e95c772a1fe10202dda4b76792b114dd/starlette-0.52.1-py3-none-any.whl", hash = "sha256:0029d43eb3d273bc4f83a08720b4912ea4b071087a3b48db01b7c839f7954d74", size = 74272, upload-time = "2026-01-18T13:34:09.188Z" },
+]
+
+[[package]]
+name = "tenuo"
+version = "0.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1d/d5/4bee9bc348ba9ae4186ecdb63adfbcaa950f2ef86bd015df860a6025752c/tenuo-0.3.2.tar.gz", hash = "sha256:0d444b59bdabdffbeff4f544c944327cb5554287ca78c1c9e87300beb9eec162", size = 2424289, upload-time = "2026-10-03T03:29:10.232Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/50/cb/f453b91735b40364d1c589a74d93f1b74a05329917c3b430227d2cf4667c/tenuo-0.3.2-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:f7c2dea9ab205972344886221683d3048a2d74df2277d374ec42b5e639ba32a0", size = 5522813, upload-time = "2026-10-03T03:29:03.954Z" },
+    { url = "https://files.pythonhosted.org/packages/08/40/99ec92aa4fcdc0ffe256cd5bee4209230785f7fa085c9455cba8d54eef1b/tenuo-0.3.2-cp39-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:0405466ec06a789a126f6e118499e44dc272e8f045cc2742a2f07bf45c107dad", size = 5737799, upload-time = "2026-10-03T03:29:05.639Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/af/4e7310840a324d7a8047e3dab4b34a1a86fa103ed75a7bb49b79e0dc1384/tenuo-0.3.2-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:c002965fe335ed013da65db9ab1792bfe276b0144cc08af7bb454a7f06528de9", size = 6077197, upload-time = "2026-10-03T03:29:07.186Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/be/169893911fca4676d171723cdac53d26dea11129d071337d3616e7535b78/tenuo-0.3.2-cp39-abi3-win_amd64.whl", hash = "sha256:33102f6426779af2bd11837d9bc1ae22cf01284fac35129613b4438b1ade41ea", size = 5788244, upload-time = "2026-10-03T03:29:08.855Z" },
 ]
 
 [[package]]

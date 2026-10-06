@@ -105,6 +105,8 @@ class Settings(BaseSettings):
 
     # Agent Config
     AGENT_MAX_ITERATIONS: int = 10
+    # Check every agent tool call against a task-scoped Tenuo warrant
+    TENUO_ENFORCE: bool = False
 
     # OpenAI Config
     OPENAI_API_KEY: str = ""
