@@ -39,6 +39,8 @@ The defended runs logged 12 denials. Every run denied at least one attempt to ap
 
 The agents' own summaries are worth reading too. One defended run ended with the orchestrator reporting the invoice as "approved by finance". It never was. What the model says happened isn't the record; the warrant check is.
 
+We also pointed [Promptfoo](https://www.promptfoo.dev) at both versions with 14 attacks from its `policy`, `hijacking` and `jailbreak-templates` red-team modules. As shipped, 12 of 14 got the invoice approved or paid and $900,000 moved. With Tenuo, none did and nothing moved. The setup, attacks and per-run results are in [`promptfoo/`](promptfoo/README.md).
+
 ## Running it yourself
 
 You need Docker (for Redis) and either an OpenAI key or [Ollama](https://ollama.com) with a model that supports tool calls.

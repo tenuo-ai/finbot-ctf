@@ -83,3 +83,6 @@ node_modules/
 # SQLite side files from local demo runs
 *.db-shm
 *.db-wal
+
+# Promptfoo raw output
+promptfoo/eval-results.json

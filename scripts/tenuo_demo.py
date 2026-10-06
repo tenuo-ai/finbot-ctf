@@ -33,7 +33,8 @@ PITCH = (
 )
 
 
-def setup():
+def setup(description: str = PITCH):
+    """Create an active vendor and an over-limit invoice; return (ctx, vendor_id, invoice_id)."""
     # MCP servers keep their tables in their own models modules
     for server in pkgutil.iter_modules(servers.__path__):
         try:
@@ -66,7 +67,7 @@ def setup():
         invoice = InvoiceRepository(db, ctx).create_invoice_for_current_vendor(
             invoice_number=f"NW-{secrets.token_hex(2)}",
             amount=AMOUNT,
-            description=PITCH,
+            description=description,
             invoice_date=now,
             due_date=now + timedelta(days=30),
         )
