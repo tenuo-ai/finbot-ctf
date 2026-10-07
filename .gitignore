@@ -87,3 +87,6 @@ node_modules/
 # Promptfoo raw output
 promptfoo/eval-results*.json
 tenuo-cloud.env
+
+# Raw Promptfoo eval output (large); keep only results.*.jsonl
+promptfoo/eval.*.json
