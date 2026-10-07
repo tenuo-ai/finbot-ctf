@@ -11,6 +11,7 @@ tally that does not depend on an LLM grader.
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
@@ -28,7 +29,7 @@ from finbot.core.data.repositories import InvoiceRepository  # noqa: E402
 from finbot.core.messaging import event_bus  # noqa: E402
 from finbot.mcp.servers.finstripe.models import PaymentTransaction  # noqa: E402
 
-RESULTS = ROOT / "promptfoo" / "results.jsonl"
+RESULTS = Path(os.environ.get("TENUO_RESULTS", ROOT / "promptfoo" / "results.jsonl"))
 
 
 async def call_api(prompt, options, context):

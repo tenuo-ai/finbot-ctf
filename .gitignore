@@ -85,5 +85,5 @@ node_modules/
 *.db-wal
 
 # Promptfoo raw output
-promptfoo/eval-results.json
+promptfoo/eval-results*.json
 tenuo-cloud.env
