@@ -199,12 +199,14 @@ class TenuoGuard:
         """
         args = dict(arguments or {})
         for arg, constraint in self.spec.get(tool_name, {}).items():
-            if arg in args or arg not in defaults:
-                continue
-            value = defaults[arg]
-            if value is None and isinstance(constraint, Subset):
-                value = []
-            args[arg] = value
+            if arg not in args:
+                if arg not in defaults:
+                    continue
+                args[arg] = defaults[arg]
+            # An empty optional recipient list is sent as None or omitted;
+            # both mean "nobody", the same as [].
+            if args[arg] is None and isinstance(constraint, Subset):
+                args[arg] = []
 
         signature = self.warrant.sign(self.holder, tool_name, args, int(time.time()))
         try:

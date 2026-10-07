@@ -169,6 +169,13 @@ async def test_workflow_root_pins_delegation_and_subagents(world):
                    {"to_addresses": None, "cc_addresses": None, "bcc_addresses": None})
     assert not allowed(orch, "delegate_to_communication", {**comm, "to_addresses": ["x@evil.example"]},
                        {"cc_addresses": None, "bcc_addresses": None})
+    # Models send None for empty optional recipient lists; that means nobody.
+    assert allowed(orch, "delegate_to_communication",
+                   {**comm, "to_addresses": None, "cc_addresses": None, "bcc_addresses": None})
+    # Recipients the model made up are not the vendor's address on file.
+    assert not allowed(orch, "delegate_to_communication",
+                       {**comm, "to_addresses": ["vendor@example.com"], "cc_addresses": None,
+                        "bcc_addresses": None})
 
     # The sub-agent is told about a different invoice by the orchestrator
     # model; its warrant still follows the workflow's invoice.
