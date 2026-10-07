@@ -43,8 +43,13 @@ def _watch_events():
         et = kwargs.get("event_type", "")
         if et == "tenuo_denied":
             denials.append(kwargs["summary"])
-        elif et.endswith("mcp_tool_call_success") or et.endswith("tool_call_success"):
-            name = (kwargs.get("event_data") or {}).get("tool_name")
+        elif et.endswith("mcp_tool_call_success"):
+            # Only the MCP provider's own success event means the tool really
+            # ran. The chat loop emits a generic tool_call_success even when a
+            # tool returned an error (including a Tenuo denial), so it can't be
+            # used to tell execution from a blocked attempt.
+            ed = kwargs.get("event_data") or {}
+            name = ed.get("namespaced_tool_name") or ed.get("tool_name")
             if name:
                 tool_calls.append(name)
         return await original(**kwargs)
