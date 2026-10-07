@@ -27,6 +27,7 @@ from finbot.core.messaging import event_bus
 from finbot.guardrails.schemas import HookKind
 from finbot.guardrails.service import GuardrailHookService
 from finbot.mcp.provider import MCPToolProvider
+from finbot.tenuo import TenuoGuard, tool_defaults
 from finbot.tools import (
     get_all_vendors_summary,
     get_invoice_details,
@@ -78,6 +79,7 @@ class ChatAssistantBase:
             session_context=session_context,
             workflow_id=self._workflow_id,
         )
+        self._tenuo: TenuoGuard | None = None
 
     def _resolve_workflow_id(self) -> str:
         try:
@@ -181,6 +183,24 @@ class ChatAssistantBase:
         callable_fn = self._tool_callables.get(name)
         if not callable_fn:
             return json.dumps({"error": f"Unknown tool: {name}"})
+        if self._tenuo:
+            if source == "mcp":
+                info = self._mcp_provider._tools.get(name, {})  # pylint: disable=protected-access
+                defaults = tool_defaults(None, info.get("input_schema"))
+            else:
+                defaults = tool_defaults(callable_fn)
+            denial, arguments = self._tenuo.prepare(name, arguments, defaults)
+            if denial:
+                await event_bus.emit_agent_event(
+                    agent_name=self.agent_name,
+                    event_type="tenuo_denied",
+                    event_subtype="tool",
+                    event_data={"tool_name": name, "tool_arguments": arguments, "reason": denial},
+                    session_context=self.session_context,
+                    workflow_id=self._workflow_id,
+                    summary=f"Tenuo denied {name}: {denial}",
+                )
+                return json.dumps({"error": f"Denied by Tenuo: {denial}"})
         try:
             result = await callable_fn(**arguments)
             if isinstance(result, str):
@@ -308,6 +328,8 @@ class ChatAssistantBase:
     ) -> AsyncGenerator[str, None]:
         """Stream a chat response as SSE events."""
         await self._connect_mcp()
+        if settings.TENUO_ENFORCE:
+            self._tenuo = await TenuoGuard.for_chat(self.agent_name, self.session_context)
 
         effective_message = user_message
         if attachments:

@@ -86,3 +86,4 @@ node_modules/
 
 # Promptfoo raw output
 promptfoo/eval-results.json
+tenuo-cloud.env

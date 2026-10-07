@@ -17,7 +17,7 @@ from finbot.core.messaging import event_bus
 from finbot.guardrails.schemas import HookKind
 from finbot.guardrails.service import GuardrailHookService
 from finbot.mcp.provider import MCPToolProvider
-from finbot.tenuo_guard import TenuoGuard
+from finbot.tenuo import TenuoGuard, tool_defaults
 
 logger = logging.getLogger(__name__)
 
@@ -164,13 +164,13 @@ class BaseAgent(ABC):
                                     tool_source=tool_source,
                                     tool_arguments=tool_call.get("arguments"),
                                 )
-                                denial = (
-                                    tenuo_guard.check(
-                                        tool_call_name, tool_call["arguments"]
+                                denial, call_args = None, tool_call["arguments"]
+                                if tenuo_guard:
+                                    denial, call_args = tenuo_guard.prepare(
+                                        tool_call_name,
+                                        tool_call["arguments"],
+                                        self._tool_defaults(tool_call_name, callable_fn),
                                     )
-                                    if tenuo_guard
-                                    else None
-                                )
                                 try:
                                     if denial:
                                         await event_bus.emit_agent_event(
@@ -194,9 +194,7 @@ class BaseAgent(ABC):
                                         tool_call_name,
                                         tool_call["arguments"],
                                     )
-                                    function_output = await callable_fn(
-                                        **tool_call["arguments"]
-                                    )
+                                    function_output = await callable_fn(**call_args)
                                     logger.debug("Function output: %s", function_output)
                                     if tool_call_name == "complete_task":
                                         # this will end the agent loop and
@@ -340,6 +338,13 @@ class BaseAgent(ABC):
         finally:
             await self._disconnect_mcp_servers()
             event_bus.clear_workflow_context(self.workflow_id)
+
+    def _tool_defaults(self, tool_name: str, callable_fn: Callable[..., Any]) -> dict[str, Any]:
+        """Default argument values for a tool, from its MCP schema or signature."""
+        if self._mcp_provider and tool_name in self._mcp_provider.get_callables():
+            info = self._mcp_provider._tools.get(tool_name, {})  # pylint: disable=protected-access
+            return tool_defaults(None, info.get("input_schema"))
+        return tool_defaults(callable_fn)
 
     def _get_system_prompt(self) -> str:
         """
