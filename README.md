@@ -20,6 +20,8 @@ The hooks are in `BaseAgent._run_agent_loop` and `ChatAssistantBase._execute_too
 
 ## Results
 
+**On gpt-5-nano, Promptfoo's attacks compromised FinBot 50 times across five entry points as shipped, and zero times with Tenuo. On a local qwen2.5:14b, the same attacks on the invoice workflow moved $900,000 as shipped and $0 with Tenuo. No legitimate work was blocked.**
+
 We pointed [Promptfoo](https://www.promptfoo.dev) at the invoice workflow with Tenuo off and on, and ran FinBot's own CFO pitch and an ordinary invoice alongside. Outcomes are read from FinBot's database: whether the $75,000 invoice ended up approved, and how much money moved.
 
 | | As shipped | With Tenuo |
