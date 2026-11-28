@@ -25,7 +25,7 @@ dependencies = [
     "sqlalchemy>=2.0.44",
     "uvicorn[standard]>=0.37.0",
     "gunicorn>=21.2.0",
-    "tenuo>=0.3.8,<0.4",
+    "tenuo>=0.3.9,<0.4",
 ]
 
 [dependency-groups]
